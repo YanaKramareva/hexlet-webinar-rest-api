@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\UnauthorizedException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'name' => 'required|string',
@@ -24,5 +28,22 @@ class AuthController extends Controller
         $user->save();
 
         return response()->json($user, 201);
+    }
+
+    public function login(Request $request): JsonResponse
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (!Auth::attempt($credentials)) {
+            abort(401);
+        }
+
+        $user = $request->user();
+
+        return response()->json([
+            'id' => $user->id,
+            'email' => $user->email,
+            'token' => $user->createToken('API_TOKEN'),
+        ]);
     }
 }

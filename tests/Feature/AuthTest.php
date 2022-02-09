@@ -13,7 +13,6 @@ class AuthTest extends TestCase
 
     public function testRegister(): void
     {
-        $uri = '/api/register';
         $body = [
             'name' => 'username',
             'email' => 'example@email.com',
@@ -21,7 +20,7 @@ class AuthTest extends TestCase
             'password_confirmation' => 'password',
         ];
 
-        $response = $this->postJson($uri, $body);
+        $response = $this->postJson(route('register'), $body);
 
         $response->assertStatus(201);
 
@@ -35,7 +34,6 @@ class AuthTest extends TestCase
         $email = 'example@email.com';
         User::factory()->create(['email' => $email]);
 
-        $uri = '/api/register';
         $body = [
             'name' => 'username',
             'email' => $email,
@@ -43,8 +41,54 @@ class AuthTest extends TestCase
             'password_confirmation' => 'password',
         ];
 
-        $response = $this->postJson($uri, $body);
+        $response = $this->postJson(route('register'), $body);
 
         $response->assertStatus(422);
+    }
+
+    public function testLogin(): void
+    {
+        $email = 'example@email.com';
+        $password = 'password';
+
+        User::factory()->create([
+            'email' => $email,
+            'password' => bcrypt($password),
+        ]);
+
+        $body = [
+            'email' => $email,
+            'password' => $password,
+        ];
+
+        $response = $this->postJson(route('login'), $body);
+
+        $response->assertStatus(200);
+
+        $response->assertJsonStructure([
+            'id',
+            'email',
+            'token',
+        ]);
+    }
+
+    public function testLoginFail(): void
+    {
+        $email = 'example@email.com';
+        $password = 'password';
+
+        User::factory()->create([
+            'email' => $email,
+            'password' => bcrypt($password),
+        ]);
+
+        $body = [
+            'email' => $email,
+            'password' => 'failed-password',
+        ];
+
+        $response = $this->postJson(route('login'), $body);
+
+        $response->assertStatus(401);
     }
 }
