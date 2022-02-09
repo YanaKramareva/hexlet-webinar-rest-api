@@ -35,7 +35,7 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (!Auth::attempt($credentials)) {
-            abort(401);
+            abort(401, 'Unauthorized.');
         }
 
         $user = $request->user();
