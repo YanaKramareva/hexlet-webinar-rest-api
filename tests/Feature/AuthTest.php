@@ -15,8 +15,10 @@ class AuthTest extends TestCase
     {
         $uri = '/api/register';
         $body = [
+            'name' => 'username',
             'email' => 'example@email.com',
             'password' => 'password',
+            'password_confirmation' => 'password',
         ];
 
         $response = $this->postJson($uri, $body);
@@ -35,12 +37,14 @@ class AuthTest extends TestCase
 
         $uri = '/api/register';
         $body = [
+            'name' => 'username',
             'email' => $email,
             'password' => 'password',
+            'password_confirmation' => 'password',
         ];
 
         $response = $this->postJson($uri, $body);
-        
+
         $response->assertStatus(422);
     }
 }
