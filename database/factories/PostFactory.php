@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,10 @@ class PostFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'title' => 'Post Name',
+            'content' => '<p>Post Content</p>',
+            'state' => Post::STATE_DRAFT,
+            'user_id' => fn() => User::factory()->create()->id,
         ];
     }
 }
