@@ -91,4 +91,19 @@ class AuthTest extends TestCase
 
         $response->assertStatus(401);
     }
+
+    public function testUseBearerToken(): void
+    {
+        $user = User::factory()->create();
+
+        $token = $user->createToken('API_TOKEN')->plainTextToken;
+
+        $route = route('me');
+
+        $response = $this->json('GET', $route, [], [
+            'Authorization' => 'Bearer ' . $token,
+        ]);
+
+        $response->assertStatus(200);
+    }
 }

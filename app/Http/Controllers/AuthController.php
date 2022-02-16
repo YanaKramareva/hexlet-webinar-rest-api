@@ -43,7 +43,12 @@ class AuthController extends Controller
         return response()->json([
             'id' => $user->id,
             'email' => $user->email,
-            'token' => $user->createToken('API_TOKEN'),
+            'token' => $user->createToken('API_TOKEN')->plainTextToken,
         ]);
+    }
+
+    public function me(): JsonResponse
+    {
+        return response()->json(Auth::user());
     }
 }
