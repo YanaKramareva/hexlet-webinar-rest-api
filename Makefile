@@ -14,3 +14,9 @@ test:
 show-routes:
 	./vendor/bin/sail artisan route:list --path api
 
+lint:
+	./vendor/bin/phpcs -- --standard=PSR12 app
+
+lint-fix:
+	./vendor/bin/phpcbf -- --standard=PSR12 app
+
